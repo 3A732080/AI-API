@@ -1,0 +1,1 @@
+Which consumers have bought products from Manufacturer  named APPLE ?

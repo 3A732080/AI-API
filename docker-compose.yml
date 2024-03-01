@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  python-service:
+    image: python:3.9
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    # command: python script.py
+    tty: true

@@ -1,0 +1,48 @@
+「Product 資料表
+Pid	Pname	Price	Manufacturer	Category
+P01	Laptop	800	Apple	Electronics
+P02	Smartphone	500	Samsung	Electronics
+P03	Jeans	50	Levis	Clothing
+P04	TV	600	Sony	Electronics
+P05	Sneakers	80	Nike	Clothing
+P06	Rice	20	Local	Grocery
+P07	T-shirt	25	Adidas	Clothing
+P08	Watch	150	Casio	Accessories
+P09	Bread	2	Local	Grocery
+P10	Mouse	30	Logitech	Electronics
+
+Customer 資料表
+Cid	Cname	City	Address	Phone	Birthday	Eid
+1	Alice	New York	123 Main St	555-1234	1990-01-01	1
+2	Bob	San Francisco	456 Market St	555-5678	1985-05-15	2
+3	Carol	Los Angeles	789 Sunset Blvd	555-2468	1977-09-30	3
+4	Dave	Chicago	111 Lakeshore Dr	555-6789	1982-02-28	4
+5	Eva	Seattle	222 Pike St	555-9876	1993-08-15	5
+6	Frank	Boston	333 Harbor St	555-4321	1975-03-14	6
+7	Grace	Austin	444 Congress Ave	555-5555	1988-06-30	7
+8	Hank	Denver	555 Broadway	555-7777	1995-11-11	8
+9	Ivy	Miami	666 Ocean Dr	555-2222	1970-12-25	9
+10	Jack	Atlanta	777 Peachtree St	555-8888	1965-04-01	10
+
+Buy 資料表
++-----+-----+--------+---------------------+
+| Cid | Pid | Amount | Datetime            |
++-----+-----+--------+---------------------+
+| C01 | P02 | 2      | 2023-09-30 12:45:30 |
+| C03 | P05 | 1      | 2023-09-25 15:21:15 |
+| C07 | P09 | 3      | 2023-09-15 10:11:45 |
+| C04 | P01 | 1      | 2023-09-28 09:54:21 |
+| C02 | P03 | 4      | 2023-09-20 17:32:11 |
+| C08 | P04 | 5      | 2023-09-10 08:22:35 |
+| C06 | P06 | 2      | 2023-09-29 21:13:50 |
+| C09 | P08 | 1      | 2023-09-12 14:44:59 |
+| C05 | P07 | 3      | 2023-09-18 11:30:47 |
+| C10 | P10 | 1      | 2023-09-07 19:05:23 |
++-----+-----+--------+---------------------+
+」
+以上為資料庫內容
+
+使用者提問：Which product is the most popular？
+
+假設 k 值為 2，閾值 𝜃 為 0.5，請列出與問題意圖最相近的 SQL 查詢，以及最終輸出的 SQL?
+
