@@ -1,0 +1,33 @@
+-- 檢查並創建 Customer 表
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Customer')
+BEGIN
+    CREATE TABLE Customer (
+        customer_id INT,
+        product_key INT
+    );
+END;
+
+-- 創建 Product 表（假設它總是被創建新的，如果已存在則需要加入檢查）
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Product')
+BEGIN
+    CREATE TABLE Product (
+        product_key INT
+    );
+END;
+
+-- 清空 Customer 和 Product 表的數據
+TRUNCATE TABLE Customer;
+TRUNCATE TABLE Product;
+
+-- 插入數據到 Customer 表
+INSERT INTO Customer (customer_id, product_key) VALUES
+(1, 5),
+(2, 6),
+(3, 5),
+(3, 6),
+(1, 6);
+
+-- 插入數據到 Product 表
+INSERT INTO Product (product_key) VALUES
+(5),
+(6);

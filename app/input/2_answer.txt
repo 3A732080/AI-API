@@ -1,0 +1,11 @@
+SELECT TOP 1 person_name
+  FROM (
+SELECT person_id
+     , person_name
+     , weight
+     , turn
+     , SUM(weight) OVER(ORDER BY turn ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+  FROM Queue
+  ) AS tbl
+ WHERE running_total <= 1000
+ ORDER BY running_total DESC;

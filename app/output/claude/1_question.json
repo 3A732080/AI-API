@@ -1,0 +1,20 @@
+[
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "Table: Employee\n\n+-------------+---------+\n| Column Name | Type    |\n+-------------+---------+\n| id          | int     |\n| name        | varchar |\n| salary      | int     |\n| managerId   | int     |\n+-------------+---------+\nid is the primary key (column with unique values) for this table.\nEach row of this table indicates the ID of an employee, their name, salary, and the ID of their manager.\n \n\nWrite a solution to find the employees who earn more than their managers.\n\nReturn the result table in any order.\n\nThe result format is in the following example.\n\n \n\nExample 1:\n\nInput: \nEmployee table:\n+----+-------+--------+-----------+\n| id | name  | salary | managerId |\n+----+-------+--------+-----------+\n| 1  | Joe   | 70000  | 3         |\n| 2  | Henry | 80000  | 4         |\n| 3  | Sam   | 60000  | Null      |\n| 4  | Max   | 90000  | Null      |\n+----+-------+--------+-----------+\nOutput template: \n+----------+\n| Employee |\n+----------+\n| ?        |\n+----------+\nExplanation: Joe is the only employee who earns more than his manager.\n\n\n-------------------------------------------------------------------------------------------------------------------------------\n\nPlease reply in json format according to the above structure, without redundant output and escape characters, so that I can get the MS SQL syntax for testing:\nexample:\n\n{\n  \"Description\": \"xxxxxxx\",\n  \"sql\": \"SELECTxxxx;\",\n  \"Explanation\": \"xxxxxx\"\n}"
+            }
+        ]
+    },
+    {
+        "role": "assistant",
+        "content": [
+            {
+                "type": "text",
+                "text": "{\n  \"Description\": \"To find the employees who earn more than their managers, we can join the Employee table with itself based on the managerId and id columns. We then compare the salary of each employee with their manager's salary and return the employee's name if their salary is higher.\",\n  \"sql\": \"SELECT e1.name AS Employee FROM Employee e1 JOIN Employee e2 ON e1.managerId = e2.id WHERE e1.salary > e2.salary;\",\n  \"Explanation\": \"1. We use a self-join on the Employee table, joining it with itself based on the condition e1.managerId = e2.id. This allows us to compare each employee's salary with their manager's salary.\\n2. We select the name column from the e1 table and alias it as 'Employee'.\\n3. In the WHERE clause, we add the condition e1.salary > e2.salary to filter out only the employees whose salary is higher than their manager's salary.\\n4. The result will contain the names of the employees who earn more than their managers.\"\n}"
+            }
+        ]
+    }
+]

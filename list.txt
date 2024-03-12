@@ -1,8 +1,23 @@
 （教學）
-google bard: https://github.com/dsdanielpark/Bard-API
 chat gpt: https://axk51013.medium.com/%E6%8A%80%E8%A1%93%E5%88%86%E4%BA%AB-2023-03-01-chatgpt-api%E5%8F%AF%E4%BB%A5%E7%94%A8%E5%95%A6-2435b6d23bbd
-claude: https://github.com/KoushikNavuluri/Claude-API
+google-gemini: https://blog.jiatool.com/posts/gemini_api/
 
 （聊天室）
-Google Bard：https://bard.google.com/chat?hl=zh-TW
-Claude：https://claude.ai/chats
+Claude：https://console.anthropic.com/dashboard
+google-gemini: https://gemini.google.com/
+
+
+1. [181] Employees Earning More Than Their Managers  - easy
+2. [1204] Last Person to Fit in the Bus  - medium
+3. [602] Friend Requests II: Who Has the Most Friends  - medium
+4. [1757] Recyclable and Low Fat Products  - easy
+5. [1581] Customer Who Visited but Did Not Make Any Transactions - easy
+6. [570] Managers with at Least 5 Direct Reports  -medium
+7. [1045] Customers Who Bought All Products  -medium
+8. [620] Not Boring Movies -easy
+9. [1978] Employees Whose Manager Left the Company  -easy
+10. [1164] Product Price at a Given Date  -medium
+
+共 10 題，
+    easy：5
+    medium：5

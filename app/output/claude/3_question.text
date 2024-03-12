@@ -1,0 +1,20 @@
+[
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "Table: RequestAccepted\n\n+----------------+---------+\n| Column Name    | Type    |\n+----------------+---------+\n| requester_id   | int     |\n| accepter_id    | int     |\n| accept_date    | date    |\n+----------------+---------+\n(requester_id, accepter_id) is the primary key (combination of columns with unique values) for this table.\nThis table contains the ID of the user who sent the request, the ID of the user who received the request, and the date when the request was accepted.\n \n\nWrite a solution to find the people who have the most friends and the most friends number.\n\nThe test cases are generated so that only one person has the most friends.\n\nThe result format is in the following example.\n\n \n\nExample 1:\n\nInput: \nRequestAccepted table:\n+--------------+-------------+-------------+\n| requester_id | accepter_id | accept_date |\n+--------------+-------------+-------------+\n| 1            | 2           | 2016/06/03  |\n| 1            | 3           | 2016/06/08  |\n| 2            | 3           | 2016/06/08  |\n| 3            | 4           | 2016/06/09  |\n+--------------+-------------+-------------+\nOutput: \n+----+-----+\n| id | num |\n+----+-----+\n| 3  | 3   |\n+----+-----+\nExplanation: \nThe person with id 3 is a friend of people 1, 2, and 4, so he has three friends in total, which is the most number than any others.\n \n\nFollow up: In the real world, multiple people could have the same most number of friends. Could you find all these people in this case?\n\n-------------------------------------------------------------------------------------------------------------------------------\n\nPlease reply in json format according to the above structure, without redundant output and escape characters, so that I can get the MS SQL syntax for testing:\nexample:\n\n{\n  \"Description\": \"xxxxxxx\",\n  \"sql\": \"SELECTxxxx;\",\n  \"Explanation\": \"xxxxxx\"\n}"
+            }
+        ]
+    },
+    {
+        "role": "assistant",
+        "content": [
+            {
+                "type": "text",
+                "text": "{\n  \"Description\": \"To find the people who have the most friends and the most friends number, we can use a subquery to count the number of friends for each person and then select the person(s) with the maximum count.\",\n  \"sql\": \"WITH cte AS (\n    SELECT id, COUNT(*) AS num\n    FROM (\n        SELECT requester_id AS id FROM RequestAccepted\n        UNION ALL\n        SELECT accepter_id AS id FROM RequestAccepted\n    ) t\n    GROUP BY id\n)\nSELECT id, num\nFROM cte\nWHERE num = (SELECT MAX(num) FROM cte);\",\n  \"Explanation\": \"1. The subquery inside the CTE (Common Table Expression) combines the requester_id and accepter_id columns using UNION ALL to get all the user IDs.\\n2. The CTE then counts the number of occurrences of each user ID using COUNT(*) and aliases it as 'num'.\\n3. The main query selects the 'id' and 'num' columns from the CTE where the 'num' is equal to the maximum 'num' value obtained from the subquery.\\n4. This will return all the people who have the most friends along with their friend count.\"\n}"
+            }
+        ]
+    }
+]

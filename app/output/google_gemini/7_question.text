@@ -1,0 +1,18 @@
+[
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "Table: Customer\n\n+-------------+---------+\n| Column Name | Type    |\n+-------------+---------+\n| customer_id | int     |\n| product_key | int     |\n+-------------+---------+\nThis table may contain duplicates rows. \ncustomer_id is not NULL.\nproduct_key is a foreign key (reference column) to Product table.\n \n\nTable: Product\n\n+-------------+---------+\n| Column Name | Type    |\n+-------------+---------+\n| product_key | int     |\n+-------------+---------+\nproduct_key is the primary key (column with unique values) for this table.\n \n\nWrite a solution to report the customer ids from the Customer table that bought all the products in the Product table.\n\nReturn the result table in any order.\n\nThe result format is in the following example.\n\n \n\nExample 1:\n\nInput: \nCustomer table:\n+-------------+-------------+\n| customer_id | product_key |\n+-------------+-------------+\n| 1           | 5           |\n| 2           | 6           |\n| 3           | 5           |\n| 3           | 6           |\n| 1           | 6           |\n+-------------+-------------+\nProduct table:\n+-------------+\n| product_key |\n+-------------+\n| 5           |\n| 6           |\n+-------------+\nOutput template: \n+-------------+\n| customer_id |\n+-------------+\n| ?           |\n+-------------+\n\n-------------------------------------------------------------------------------------------------------------------------------\n\nPlease reply in json format according to the above structure, without redundant output and escape characters, so that I can get the MS SQL syntax for testing:\nexample:\n\n{\n  \"Description\": \"xxxxxxx\",\n  \"sql\": \"SELECTxxxx;\",\n  \"Explanation\": \"xxxxxx\"\n}"
+            }
+        ]
+    },
+    {
+        "parts": [
+            {
+                "text": "{\n  \"Description\": \"Finds the customer IDs that bought all the products in the Product table.\",\n  \"sql\": \"SELECT C.customer_id\\nFROM Customer C\\nWHERE NOT EXISTS (\\n    SELECT 1\\n    FROM Product P\\n    WHERE NOT EXISTS (\\n        SELECT 1\\n        FROM Customer cus\\n        WHERE cus.customer_id = C.customer_id AND cus.product_key = P.product_key\\n    )\\n);\",\n  \"Explanation\": \"This query uses a subquery to find the products that a customer has not purchased. If the subquery returns no results for a given customer, it means that the customer has purchased all products, and the customer's ID is included in the result set.\"\n}"
+            }
+        ],
+        "role": "model"
+    }
+]

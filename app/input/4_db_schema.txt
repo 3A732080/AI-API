@@ -1,0 +1,19 @@
+-- 創建 Products 表，如果它不存在
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE Products (
+        product_id INT,
+        low_fats CHAR(1) CONSTRAINT chk_low_fats CHECK (low_fats IN ('Y', 'N')),
+        recyclable CHAR(1) CONSTRAINT chk_recyclable CHECK (recyclable IN ('Y', 'N'))
+    );
+END
+
+-- 清空 Products 表的數據
+TRUNCATE TABLE Products;
+
+-- 插入數據到 Products 表
+INSERT INTO Products (product_id, low_fats, recyclable) VALUES (0, 'Y', 'N'),
+                                                           (1, 'Y', 'Y'),
+                                                           (2, 'N', 'Y'),
+                                                           (3, 'Y', 'Y'),
+                                                           (4, 'N', 'N');

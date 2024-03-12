@@ -1,0 +1,18 @@
+[
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "Table: Employees\n\n+-------------+----------+\n| Column Name | Type     |\n+-------------+----------+\n| employee_id | int      |\n| name        | varchar  |\n| manager_id  | int      |\n| salary      | int      |\n+-------------+----------+\nIn SQL, employee_id is the primary key for this table.\nThis table contains information about the employees, their salary, and the ID of their manager. Some employees do not have a manager (manager_id is null). \n \n\nFind the IDs of the employees whose salary is strictly less than $30000 and whose manager left the company. When a manager leaves the company, their information is deleted from the Employees table, but the reports still have their manager_id set to the manager that left.\n\nReturn the result table ordered by employee_id.\n\nThe result format is in the following example.\n\n \n\nExample 1:\n\nInput:  \nEmployees table:\n+-------------+-----------+------------+--------+\n| employee_id | name      | manager_id | salary |\n+-------------+-----------+------------+--------+\n| 3           | Mila      | 9          | 60301  |\n| 12          | Antonella | null       | 31000  |\n| 13          | Emery     | null       | 67084  |\n| 1           | Kalel     | 11         | 21241  |\n| 9           | Mikaela   | null       | 50937  |\n| 11          | Joziah    | 6          | 28485  |\n+-------------+-----------+------------+--------+\nOutput: \n+-------------+\n| employee_id |\n+-------------+\n| ?           |\n+-------------+\n\n-------------------------------------------------------------------------------------------------------------------------------\n\nPlease reply in json format according to the above structure, without redundant output and escape characters, so that I can get the MS SQL syntax for testing:\nexample:\n\n{\n  \"Description\": \"xxxxxxx\",\n  \"sql\": \"SELECTxxxx;\",\n  \"Explanation\": \"xxxxxx\"\n}"
+            }
+        ]
+    },
+    {
+        "parts": [
+            {
+                "text": "{\n  \"Description\": \"Find the IDs of the employees whose salary is strictly less than $30000 and whose manager left the company.\",\n  \"sql\": \"SELECT e.employee_id\\nFROM Employees e\\nLEFT JOIN Employees m ON e.manager_id = m.employee_id\\nWHERE e.salary < 30000 AND m.employee_id IS NULL\\nORDER BY e.employee_id;\",\n  \"Explanation\": \"This query uses a LEFT JOIN to combine the 'Employees' table with itself on the 'manager_id' column. The 'LEFT JOIN' ensures that all rows from the 'Employees' table are included in the result, even if there is no matching row in the other table. The 'WHERE' clause is used to filter the results to include only employees whose salary is less than $30000 and whose manager is 'NULL' (indicating that their manager has left the company). Finally, the 'ORDER BY' clause is used to sort the result by the 'employee_id' column.\"\n}"
+            }
+        ],
+        "role": "model"
+    }
+]

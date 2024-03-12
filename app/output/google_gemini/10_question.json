@@ -1,0 +1,34 @@
+[
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "Table: Products\n\n+---------------+---------+\n| Column Name   | Type    |\n+---------------+---------+\n| product_id    | int     |\n| new_price     | int     |\n| change_date   | date    |\n+---------------+---------+\n(product_id, change_date) is the primary key (combination of columns with unique values) of this table.\nEach row of this table indicates that the price of some product was changed to a new price at some date.\n \n\nWrite a solution to find the prices of all products on 2019-08-16. Assume the price of all products before any change is 10.\n\nReturn the result table in any order.\n\nThe result format is in the following example.\n\n \n\nExample 1:\n\nInput: \nProducts table:\n+------------+-----------+-------------+\n| product_id | new_price | change_date |\n+------------+-----------+-------------+\n| 1          | 20        | 2019-08-14  |\n| 2          | 50        | 2019-08-14  |\n| 1          | 30        | 2019-08-15  |\n| 1          | 35        | 2019-08-16  |\n| 2          | 65        | 2019-08-17  |\n| 3          | 20        | 2019-08-18  |\n+------------+-----------+-------------+\nOutput: \n+------------+-------+\n| product_id | price |\n+------------+-------+\n| ?          | ?     |\n+------------+-------+\n\n-------------------------------------------------------------------------------------------------------------------------------\n\nPlease reply in json format according to the above structure, without redundant output and escape characters, so that I can get the MS SQL syntax for testing:\nexample:\n\n{\n  \"Description\": \"xxxxxxx\",\n  \"sql\": \"SELECTxxxx;\",\n  \"Explanation\": \"xxxxxx\"\n}"
+            }
+        ]
+    },
+    {
+        "parts": [
+            {
+                "text": "{\n  \"Description\": \"This query finds the prices of all products on a specific date.\",\n  \"sql\": \"SELECT product_id, \\n\" +\n    \"       COALESCE(new_price, 10) AS price\\n\" +\n    \"FROM Products\\n\" +\n    \"WHERE change_date = '2019-08-16'\\n\" +\n    \"UNION\\n\" +\n    \"SELECT product_id, 10 AS price\\n\" +\n    \"FROM Products\\n\" +\n    \"WHERE change_date IS NULL;\",\n  \"Explanation\": \"The query first selects the product_id and new_price from the Products table for the specified change_date. If there is no new_price for a product on that date, the COALESCE function returns the default value of 10. The query then unions this result set with a second query that selects the product_id and a default price of 10 for any products that do not have a change_date. This ensures that all products are included in the result set, even if they have not had a price change.\"\n}"
+            }
+        ],
+        "role": "model"
+    },
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": " There was an error in the sql just now:\n    (102, b\"Incorrect syntax near 'line'.DB-Lib error message 20018, severity 15:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")\n    -------------------------------------------------------------------------------------------------------------------------------\n    Please continue to reply in json format according to the above structure, without extra output and escape characters, so that I can get the MS SQL syntax for testing:\n    example:\n\n    {\n        \"Description\": \"xxxxxxx\",\n        \"sql\": \"SELECTxxxx;\",\n        \"Explanation\": \"xxxxxx\"\n    }\n    "
+            }
+        ]
+    },
+    {
+        "parts": [
+            {
+                "text": "{\n  \"Description\": \"This query finds the prices of all products on a specific date.\",\n  \"sql\": \"SELECT product_id, \\n\" +\n    \"       ISNULL(new_price, 10) AS price\\n\" +\n    \"FROM Products\\n\" +\n    \"WHERE change_date = '2019-08-16'\\n\" +\n    \"UNION\\n\" +\n    \"SELECT product_id, 10 AS price\\n\" +\n    \"FROM Products\\n\" +\n    \"WHERE change_date IS NULL;\",\n  \"Explanation\": \"The query first selects the product_id and new_price from the Products table for the specified change_date. If there is no new_price for a product on that date, the ISNULL function returns the default value of 10. The query then unions this result set with a second query that selects the product_id and a default price of 10 for any products that do not have a change_date. This ensures that all products are included in the result set, even if they have not had a price change.\"\n}"
+            }
+        ],
+        "role": "model"
+    }
+]

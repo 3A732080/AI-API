@@ -1,0 +1,419 @@
+root@7a7217590929:/app# python index.py 
+'---------------------------------------------'
+'1_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+'SELECT E.name AS Employee\nFROM Employee E\nJOIN Employee M ON E.managerId = M.id\nWHERE E.salary > M.salary'
+"參考答案的SQL撈取結果: {'column': ['Employee'], 'value': [['Joe']]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+'SELECT e.name AS Employee\nFROM Employee e\nJOIN Employee m ON e.managerId = m.id\nWHERE e.salary > m.salary;'
+'SQL 結構相似度: 100.00%'
+"SQL 撈取結果: {'column': ['Employee'], 'value': [['Joe']]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+'SELECT e.name AS Employee FROM Employee e JOIN Employee m ON e.managerId = m.id WHERE e.salary > m.salary;'
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': ['Employee'], 'value': [['Joe']]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+'SELECT e1.name AS Employee FROM Employee e1 JOIN Employee e2 ON e1.managerId = e2.id WHERE e1.salary > e2.salary;'
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': ['Employee'], 'value': [['Joe']]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'2_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+('SELECT TOP 1 person_name\n'
+ '  FROM (\n'
+ 'SELECT person_id\n'
+ '     , person_name\n'
+ '     , weight\n'
+ '     , turn\n'
+ '     , SUM(weight) OVER(ORDER BY turn ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total\n'
+ '  FROM Queue\n'
+ '  ) AS tbl\n'
+ ' WHERE running_total <= 1000\n'
+ ' ORDER BY running_total DESC;')
+"參考答案的SQL撈取結果: {'column': ['person_name'], 'value': [['John Cena']]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+('SELECT person_name\n'
+ 'FROM Queue\n'
+ 'WHERE weight <= (SELECT SUM(weight) FROM Queue WHERE turn <= Queue.turn)\n'
+ '  AND weight <= (1000 - SUM(weight) OVER (ORDER BY turn))\n'
+ 'ORDER BY turn DESC\n'
+ 'LIMIT 1;')
+'錯誤處理後的 SQL:'
+('SELECT person_name\n'
+ 'FROM Queue\n'
+ 'WHERE weight <= (SELECT SUM(weight) FROM Queue WHERE turn <= Queue.turn)\n'
+ '  AND weight <= (1000 - SUM(weight) OVER (ORDER BY turn ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING))\n'
+ 'ORDER BY turn DESC\n'
+ 'LIMIT 1;')
+'SQL 結構相似度: 85.71%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+('SELECT person_name FROM Queue WHERE (SELECT SUM(weight) FROM Queue AS sq WHERE sq.turn <= Queue.turn) <= 1000 ORDER '
+ 'BY turn DESC LIMIT 1;')
+'錯誤處理後的 SQL:'
+('SELECT TOP 1 person_name FROM (SELECT q.person_name, SUM(sq.weight) AS total_weight FROM Queue q, Queue sq WHERE '
+ 'q.turn >= sq.turn GROUP BY q.person_id, q.person_name) AS sub WHERE total_weight <= 1000 ORDER BY turn DESC;')
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+('    WITH cte AS (      SELECT person_name, weight,        SUM(weight) OVER (ORDER BY turn) AS total_weight      FROM '
+ 'Queue    )    SELECT person_name    FROM cte    WHERE total_weight <= 1000    ORDER BY total_weight DESC    LIMIT '
+ '1;  ')
+'錯誤處理後的 SQL:'
+('    WITH cte AS (      SELECT person_name, weight,        SUM(weight) OVER (ORDER BY turn) AS total_weight,        '
+ 'ROW_NUMBER() OVER (ORDER BY turn DESC) AS rn      FROM Queue      WHERE SUM(weight) OVER (ORDER BY turn) <= 1000    '
+ ')    SELECT person_name    FROM cte    WHERE rn = 1;  ')
+'SQL 結構相似度: 57.14%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'3_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+('with cte as (\n'
+ 'select  requester_id as id   from RequestAccepted\n'
+ 'union all\n'
+ 'select accepter_id as id from RequestAccepted\n'
+ ')\n'
+ 'select top 1 id, count(*) as num from cte group by id order by num desc')
+"參考答案的SQL撈取結果: {'column': ['id', 'num'], 'value': [[3, 3]]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+'SELECT requester_id AS id, COUNT(*) AS num\nFROM RequestAccepted\nGROUP BY requester_id\nORDER BY num DESC\nLIMIT 1;'
+'錯誤處理後的 SQL:'
+('SELECT requester_id AS id, COUNT(*) AS num\n'
+ 'FROM RequestAccepted\n'
+ 'GROUP BY requester_id\n'
+ 'ORDER BY num DESC\n'
+ 'OFFSET 0 ROWS\n'
+ 'FETCH NEXT 1 ROWS ONLY;')
+'SQL 結構相似度: 64.29%'
+"SQL 撈取結果: {'column': ['id', 'num'], 'value': [[1, 2]]}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+('SELECT friend_id AS id, COUNT(*) AS num\n'
+ 'FROM\n'
+ '(\n'
+ '    SELECT requester_id AS friend_id\n'
+ '    FROM RequestAccepted\n'
+ '    UNION ALL\n'
+ '    SELECT accepter_id AS friend_id\n'
+ '    FROM RequestAccepted\n'
+ ') AS all_friends\n'
+ 'GROUP BY friend_id\n'
+ 'ORDER BY COUNT(*) DESC\n'
+ 'LIMIT 1;')
+'錯誤處理後的 SQL:'
+('SELECT TOP 1 friend_id AS id, COUNT(*) AS num\n'
+ 'FROM\n'
+ '(\n'
+ '    SELECT requester_id AS friend_id\n'
+ '    FROM RequestAccepted\n'
+ '    UNION ALL\n'
+ '    SELECT accepter_id AS friend_id\n'
+ '    FROM RequestAccepted\n'
+ ') AS all_friends\n'
+ 'GROUP BY friend_id\n'
+ 'ORDER BY COUNT(*) DESC;')
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': ['id', 'num'], 'value': [[3, 3]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+('WITH cte AS (    SELECT requester_id AS id, COUNT(*) AS num    FROM RequestAccepted    GROUP BY requester_id    '
+ 'UNION    SELECT accepter_id AS id, COUNT(*) AS num    FROM RequestAccepted    GROUP BY accepter_id)SELECT id, '
+ 'SUM(num) AS numFROM cteGROUP BY idHAVING SUM(num) = (    SELECT MAX(total_friends)    FROM (        SELECT id, '
+ 'SUM(num) AS total_friends        FROM cte        GROUP BY id    ) t);')
+'錯誤處理後的 SQL:'
+('WITH cte AS (    SELECT requester_id AS id, COUNT(*) AS num    FROM RequestAccepted    GROUP BY requester_id    '
+ 'UNION    SELECT accepter_id AS id, COUNT(*) AS num    FROM RequestAccepted    GROUP BY accepter_id)SELECT id, '
+ 'SUM(num) AS numFROM cteGROUP BY idHAVING SUM(num) = (    SELECT MAX(total_friends)    FROM (        SELECT SUM(num) '
+ 'AS total_friends        FROM cte        GROUP BY id    ) t);')
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'4_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+"select product_id from products\nwhere low_fats = 'Y' and recyclable = 'Y';"
+"參考答案的SQL撈取結果: {'column': ['product_id'], 'value': [[1], [3]]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+"SELECT product_id FROM Products WHERE low_fats = 'Y' AND recyclable = 'Y';"
+'SQL 結構相似度: 85.71%'
+"SQL 撈取結果: {'column': ['product_id'], 'value': [[1], [3]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+"SELECT product_id FROM Products WHERE low_fats = 'Y' AND recyclable = 'Y';"
+'SQL 結構相似度: 85.71%'
+"SQL 撈取結果: {'column': ['product_id'], 'value': [[1], [3]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+"SELECT product_id FROM Products WHERE low_fats = 'Y' AND recyclable = 'Y';"
+'SQL 結構相似度: 85.71%'
+"SQL 撈取結果: {'column': ['product_id'], 'value': [[1], [3]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'5_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+('SELECT customer_id, count(*) as count_no_trans FROM visits as v\n'
+ 'LEFT JOIN Transactions as t on v.visit_id = t.visit_id\n'
+ 'WHERE t.visit_id IS NULL \n'
+ 'GROUP BY v.customer_id;')
+"參考答案的SQL撈取結果: {'column': ['customer_id', 'count_no_trans'], 'value': [[30, 1], [54, 2], [96, 1]]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+('SELECT v.customer_id,COUNT(*) AS count_no_trans\n'
+ 'FROM Visits v\n'
+ 'LEFT JOIN Transactions t ON v.visit_id=t.visit_id\n'
+ 'WHERE t.visit_id IS NULL\n'
+ 'GROUP BY v.customer_id')
+'SQL 結構相似度: 100.00%'
+"SQL 撈取結果: {'column': ['customer_id', 'count_no_trans'], 'value': [[30, 1], [54, 2], [96, 1]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+'Invalid \\escape: line 1 column 173 (char 172)'
+'錯誤處理後的 SQL:'
+'Invalid \\escape: line 1 column 173 (char 172)'
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+('SELECT customer_id, COUNT(visit_id) AS count_no_transFROM VisitsWHERE visit_id NOT IN (    SELECT visit_id    FROM '
+ 'Transactions)GROUP BY customer_id;')
+'錯誤處理後的 SQL:'
+('SELECT customer_id, COUNT(visit_id) AS count_no_transFROM VisitsWHERE visit_id NOT IN (    SELECT visit_id    FROM '
+ 'Transactions)GROUP BY customer_id;')
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'6_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+('select e.name\n'
+ 'from Employee as e\n'
+ 'where e.id = any(\n'
+ '    select sub_e.managerId\n'
+ '    from Employee as sub_e\n'
+ '    group by sub_e.managerId\n'
+ '    having count(sub_e.managerId) >= 5\n'
+ ')')
+"參考答案的SQL撈取結果: {'column': ['name'], 'value': [['John']]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+('SELECT e.name\n'
+ 'FROM Employee e\n'
+ 'WHERE e.id IN (SELECT managerId\n'
+ '                FROM Employee\n'
+ '                GROUP BY managerId\n'
+ '                HAVING COUNT(*) >= 5);')
+'SQL 結構相似度: 85.71%'
+"SQL 撈取結果: {'column': ['name'], 'value': [['John']]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+'SELECT name FROM Employee WHERE id IN (SELECT managerId FROM Employee GROUP BY managerId HAVING COUNT(id) >= 5);'
+'SQL 結構相似度: 57.14%'
+"SQL 撈取結果: {'column': ['name'], 'value': [['John']]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+'SELECT m.nameFROM Employee eJOIN Employee m ON e.managerId = m.idGROUP BY m.id, m.nameHAVING COUNT(*) >= 5;'
+'錯誤處理後的 SQL:'
+('SELECT name FROM EmployeeWHERE id IN (    SELECT managerId    FROM Employee    GROUP BY managerId    HAVING COUNT(*) '
+ '>= 5);')
+'SQL 結構相似度: 57.14%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'7_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+('SELECT c.customer_id\n'
+ 'FROM Customer c\n'
+ 'group by customer_id \n'
+ 'HAVING count(distinct c.product_key) = (select count(distinct p.product_key) FROM Product p);')
+"參考答案的SQL撈取結果: {'column': ['customer_id'], 'value': [[1], [3]]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+('SELECT c.customer_idFROM Customer cGROUP BY c.customer_idHAVING COUNT(DISTINCT c.product_key) = (SELECT COUNT(*) '
+ 'FROM Product)')
+'錯誤處理後的 SQL:'
+('SELECT c.customer_idFROM Customer cGROUP BY c.customer_idHAVING COUNT(DISTINCT c.product_key) = (SELECT COUNT(*) '
+ 'FROM Product)')
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+('SELECT customer_id FROM Customer GROUP BY customer_id HAVING COUNT(DISTINCT product_key) = (SELECT COUNT(*) FROM '
+ 'Product);')
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': ['customer_id'], 'value': [[1], [3]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+('SELECT customer_idFROM CustomerGROUP BY customer_idHAVING COUNT(DISTINCT product_key) = (SELECT COUNT(*) FROM '
+ 'Product);')
+'錯誤處理後的 SQL:'
+('SELECT customer_idFROM Customer cWHERE NOT EXISTS (  SELECT product_key  FROM Product  WHERE product_key NOT IN (    '
+ 'SELECT product_key    FROM Customer    WHERE customer_id = c.customer_id  ));')
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'8_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+"SELECT * FROM Cinema\nWHERE id % 2 != 0 AND description != 'boring'\nORDER BY rating DESC;"
+("參考答案的SQL撈取結果: {'column': ['id', 'movie', 'description', 'rating'], 'value': [[5, 'House card', 'Interesting', 9.1], "
+ "[1, 'War', 'great 3D', 8.9]]}")
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+('SELECT id, movie, description, rating\n'
+ 'FROM Cinema\n'
+ "WHERE id % 2 = 1 AND description <> 'boring'\n"
+ 'ORDER BY rating DESC;')
+'SQL 結構相似度: 100.00%'
+("SQL 撈取結果: {'column': ['id', 'movie', 'description', 'rating'], 'value': [[5, 'House card', 'Interesting', 9.1], [1, "
+ "'War', 'great 3D', 8.9]]}")
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+"SELECT * FROM Cinema WHERE id % 2 = 1 AND description <> 'boring' ORDER BY rating DESC;"
+'SQL 結構相似度: 71.43%'
+("SQL 撈取結果: {'column': ['id', 'movie', 'description', 'rating'], 'value': [[5, 'House card', 'Interesting', 9.1], [1, "
+ "'War', 'great 3D', 8.9]]}")
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+"SELECT id, movie, description, rating FROM Cinema WHERE id % 2 = 1 AND description != 'boring' ORDER BY rating DESC;"
+'SQL 結構相似度: 71.43%'
+("SQL 撈取結果: {'column': ['id', 'movie', 'description', 'rating'], 'value': [[5, 'House card', 'Interesting', 9.1], [1, "
+ "'War', 'great 3D', 8.9]]}")
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'9_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+('select e.employee_id from employees e left join employees e1 on e.manager_id=e1.employee_id\n'
+ 'where (e1.employee_id is null and e.manager_id is not null) and e.salary<30000\n'
+ 'order by employee_id')
+"參考答案的SQL撈取結果: {'column': ['employee_id'], 'value': [[11]]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+('SELECT e.employee_id\n'
+ 'FROM Employees e\n'
+ 'LEFT JOIN Employees m ON e.manager_id = m.employee_id\n'
+ 'WHERE e.salary < 30000 AND m.employee_id IS NULL\n'
+ 'ORDER BY e.employee_id;')
+'SQL 結構相似度: 100.00%'
+"SQL 撈取結果: {'column': ['employee_id'], 'value': [[11]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+'SELECT employee_id FROM Employees WHERE salary < 30000 AND manager_id NOT IN (SELECT employee_id FROM Employees);'
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': ['employee_id'], 'value': [[11]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+('SELECT employee_idFROM EmployeesWHERE salary < 30000 AND manager_id NOT IN (SELECT employee_id FROM Employees)ORDER '
+ 'BY employee_id;')
+'錯誤處理後的 SQL:'
+('SELECT employee_idFROM EmployeesWHERE salary < 30000 AND manager_id IS NOT NULL AND manager_id NOT IN (SELECT '
+ 'employee_id FROM Employees)ORDER BY employee_id;')
+'SQL 結構相似度: 71.43%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'10_answer:'
+'---------------------------------------------'
+'參考答案的 SQL:'
+('SELECT p.product_id, p.new_price AS price\n'
+ 'FROM Products p \n'
+ 'WHERE EXISTS (\n'
+ '    SELECT product_id, MAX(change_date) AS last_change\n'
+ '    FROM Products\n'
+ "    WHERE change_date <= '2019-08-16'\n"
+ '    GROUP BY product_id\n'
+ '    HAVING product_id = p.product_id AND MAX(change_date) = p.change_date\n'
+ ')\n'
+ 'UNION ALL\n'
+ 'SELECT DISTINCT(p.product_id), 10 AS price\n'
+ 'FROM Products p\n'
+ 'WHERE product_id IN (\n'
+ '    SELECT product_id FROM Products\n'
+ '    GROUP BY product_id\n'
+ "    HAVING MIN(change_date) > '2019-08-16'\n"
+ ')\n'
+ ';')
+"參考答案的SQL撈取結果: {'column': ['product_id', 'price'], 'value': [[2, 50], [1, 35], [3, 10]]}"
+'---------------------------------------------'
+'google_gemini 預測的 SQL:'
+"Expecting ',' delimiter: line 1 column 118 (char 117)"
+'錯誤處理後的 SQL:'
+"Expecting ',' delimiter: line 1 column 118 (char 117)"
+'SQL 結構相似度: 42.86%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL:'
+("SELECT product_id, COALESCE(new_price, 10) AS price FROM Products WHERE change_date <= '2019-08-16' GROUP BY "
+ 'product_id;')
+'錯誤處理後的 SQL:'
+("SELECT product_id, COALESCE(MAX(CASE WHEN change_date <= '2019-08-16' THEN new_price END), 10) AS price FROM "
+ 'Products GROUP BY product_id;')
+'SQL 結構相似度: 42.86%'
+"SQL 撈取結果: {'column': ['product_id', 'price'], 'value': [[1, 35], [2, 50], [3, 10]]}"
+'SQL 預測結果:正確'
+'---------------------------------------------'
+'claude 預測的 SQL:'
+('SELECT p.product_id, COALESCE(c.new_price, 10) AS priceFROM (SELECT DISTINCT product_id FROM Products) pLEFT JOIN '
+ "Products c ON p.product_id = c.product_id AND c.change_date <= '2019-08-16'LEFT JOIN Products c2 ON p.product_id = "
+ "c2.product_id AND c.change_date < c2.change_date AND c2.change_date <= '2019-08-16'WHERE c2.product_id IS NULL;")
+'錯誤處理後的 SQL:'
+('SELECT p.product_id, COALESCE(c.new_price, 10) AS priceFROM (SELECT DISTINCT product_id FROM Products) pLEFT JOIN '
+ "Products c ON p.product_id = c.product_id AND c.change_date <= '2019-08-16'LEFT JOIN Products c2 ON p.product_id = "
+ "c2.product_id AND c.change_date < c2.change_date AND c2.change_date <= '2019-08-16'WHERE c2.product_id IS NULL;")
+'SQL 結構相似度: 42.86%'
+"SQL 撈取結果: {'column': [], 'value': []}"
+'SQL 預測結果:不正確'
+'---------------------------------------------'
+'chat_gpt 預測的 SQL 分析:'
+'準確率: 80.00%'
+'SQL 結構相似度: 68.57%'
+'錯誤處理後的準確率: 50.00%'
+'---------------------------------------------'
+'google_gemini 預測的 SQL 分析:'
+'準確率: 60.00%'
+'SQL 結構相似度: 83.57%'
+'錯誤處理後的準確率: 0.00%'
+'---------------------------------------------'
+'claude 預測的 SQL 分析:'
+'準確率: 30.00%'
+'SQL 結構相似度: 67.14%'
+'錯誤處理後的準確率: 0.00%'
+'---------------------------------------------'
+root@7a7217590929:/app# 

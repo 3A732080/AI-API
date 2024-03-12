@@ -1,0 +1,21 @@
+-- 檢查 Products 表是否存在，如果不存在則創建
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND type = 'U')
+BEGIN
+    CREATE TABLE Products (
+        product_id INT,
+        new_price INT,
+        change_date DATE
+    );
+END;
+
+-- 由於我們剛剛建立了表，下一步的 TRUNCATE 操作是可選的，但為了保證這段代碼的通用性，仍然保留這個步驟
+TRUNCATE TABLE Products;
+
+-- 插入數據到 Products 表
+INSERT INTO Products (product_id, new_price, change_date) VALUES
+(1, 20, '2019-08-14'),
+(2, 50, '2019-08-14'),
+(1, 30, '2019-08-15'),
+(1, 35, '2019-08-16'),
+(2, 65, '2019-08-17'),
+(3, 20, '2019-08-18');
