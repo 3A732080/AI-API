@@ -10,7 +10,7 @@
     {
         "parts": [
             {
-                "text": "{\n  \"Description\": \"Find the IDs of the employees whose salary is strictly less than $30000 and whose manager left the company.\",\n  \"sql\": \"SELECT e.employee_id\\nFROM Employees e\\nLEFT JOIN Employees m ON e.manager_id = m.employee_id\\nWHERE m.employee_id IS NULL AND e.salary < 30000\\nORDER BY e.employee_id;\",\n  \"Explanation\": \"We can use a LEFT JOIN to find employees whose manager is not present in the Employees table (i.e., their manager has left the company). We then filter the results to include only employees with a salary less than $30000 and order the results by employee_id.\"\n}"
+                "text": "{\n  \"Description\": \"Find the IDs of the employees whose salary is strictly less than $30000 and whose manager left the company.\",\n  \"sql\": \"SELECT e.employee_id\\nFROM Employees e\\nLEFT JOIN Employees m ON e.manager_id = m.employee_id\\nWHERE e.salary < 30000 AND m.employee_id IS NULL\\nORDER BY e.employee_id;\",\n  \"Explanation\": \"This query uses a LEFT JOIN to combine the 'Employees' table with itself on the 'manager_id' column. The 'LEFT JOIN' ensures that all rows from the 'Employees' table are included in the result, even if there is no matching row in the other table. The 'WHERE' clause is used to filter the results to include only employees whose salary is less than $30000 and whose manager is 'NULL' (indicating that their manager has left the company). Finally, the 'ORDER BY' clause is used to sort the result by the 'employee_id' column.\"\n}"
             }
         ],
         "role": "model"

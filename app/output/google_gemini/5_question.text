@@ -10,7 +10,7 @@
     {
         "parts": [
             {
-                "text": "{\n  \"Description\": \"Find the customer_ids and count of their visits with no transactions\",\n  \"sql\": \"SELECT c.customer_id,COUNT(c.visit_id) AS count_no_trans\\nFROM Visits c\\nLEFT JOIN Transactions t ON c.visit_id=t.visit_id\\nWHERE t.transaction_id IS NULL\\nGROUP BY c.customer_id;\",\n  \"Explanation\": \"This query first joins the Visits and Transactions tables on the visit_id column, and then filters the results to only include rows where the transaction_id column is NULL. This gives us a table of all the visits that did not have any transactions. We then group the results by customer_id and count the number of visits for each customer.\"\n}"
+                "text": "{\n  \"Description\": \"Find the Ids of the users who visited without making any transactions and the number of visits they made.\",\n  \"sql\": \"SELECT v.customer_id,COUNT(*) AS count_no_trans\\nFROM Visits v\\nLEFT JOIN Transactions t ON v.visit_id=t.visit_id\\nWHERE t.visit_id IS NULL\\nGROUP BY v.customer_id\",\n  \"Explanation\": \"This uses a subquery to remove entries that have been joined, to remove any transactions from the results.\"\n}"
             }
         ],
         "role": "model"

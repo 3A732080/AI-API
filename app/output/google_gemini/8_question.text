@@ -10,7 +10,7 @@
     {
         "parts": [
             {
-                "text": "{\n  \"Description\": \"To select the movies given the condition and order it by the rating in descending order, you can use the following query:\",\n  \"sql\": \"SELECT id, movie, description, rating\\nFROM Cinema\\nWHERE id % 2 = 1 AND description <> 'boring'\\nORDER BY rating DESC;\",\n  \"Explanation\": \"The WHERE clause checks for the odd-numbered IDs and non-'boring' descriptions, and the ORDER BY clause sorts the results by the rating in descending order.\"\n}"
+                "text": "{\n  \"Description\": \"Selecting movies with odd IDs and non-boring descriptions, ordered by rating in descending order.\",\n  \"sql\": \"SELECT id, movie, description, rating\\nFROM Cinema\\nWHERE id % 2 = 1 AND description <> 'boring'\\nORDER BY rating DESC;\",\n  \"Explanation\": \"The query uses a combination of the modulo operator (%) and the comparison operator (<>) to filter rows where the id is odd and the description is not 'boring'. The results are then ordered in descending order by rating using the ORDER BY clause.\"\n}"
             }
         ],
         "role": "model"

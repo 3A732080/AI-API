@@ -5,6 +5,6 @@
     },
     {
         "role": "assistant",
-        "content": "{\n  \"Description\": \"Find the IDs of employees with salary less than $30000 whose manager left the company.\",\n  \"sql\": \"SELECT employee_id FROM Employees WHERE salary < 30000 AND manager_id NOT IN (SELECT employee_id FROM Employees);\",\n  \"Explanation\": \"We use a subquery to get the IDs of employees who are managers (manager_id) and then select the employee_ids where salary is less than $30000 but their manager_id is not in the list of current employees.\"\n}"
+        "content": "{\n  \"Description\": \"Find the IDs of the employees whose salary is strictly less than $30000 and whose manager left the company.\",\n  \"sql\": \"SELECT employee_id FROM Employees WHERE salary < 30000 AND manager_id NOT IN (SELECT employee_id FROM Employees);\",\n  \"Explanation\": \"The SQL query selects the employee_id from the Employees table where the salary is less than 30000 and the manager_id is not in the list of active employees (meaning their manager left the company).\"\n}"
     }
 ]

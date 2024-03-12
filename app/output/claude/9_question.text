@@ -16,5 +16,23 @@
                 "text": "{\n  \"Description\": \"Find the IDs of employees whose salary is less than $30000 and whose manager has left the company.\",\n  \"sql\": \"SELECT employee_id\nFROM Employees\nWHERE salary < 30000 AND manager_id NOT IN (SELECT employee_id FROM Employees)\nORDER BY employee_id;\",\n  \"Explanation\": \"The query first selects employees with a salary less than $30000. It then filters those employees whose manager_id is not present in the employee_id column, indicating that their manager has left the company. The result is ordered by employee_id.\"\n}"
             }
         ]
+    },
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": " There was an error in the sql just now:\n    (102, b\"Incorrect syntax near 'salary'.DB-Lib error message 20018, severity 15:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")\n    -------------------------------------------------------------------------------------------------------------------------------\n    Please continue to reply in json format according to the above structure, without extra output and escape characters, so that I can get the MS SQL syntax for testing:\n    example:\n\n    {\n        \"Description\": \"xxxxxxx\",\n        \"sql\": \"SELECTxxxx;\",\n        \"Explanation\": \"xxxxxx\"\n    }\n    "
+            }
+        ]
+    },
+    {
+        "role": "assistant",
+        "content": [
+            {
+                "type": "text",
+                "text": "{\n  \"Description\": \"Find the IDs of employees whose salary is less than $30000 and whose manager has left the company.\",\n  \"sql\": \"SELECT employee_id\nFROM Employees\nWHERE salary < 30000 AND manager_id IS NOT NULL AND manager_id NOT IN (SELECT employee_id FROM Employees)\nORDER BY employee_id;\",\n  \"Explanation\": \"The query first selects employees with a salary less than $30000. It then checks if the manager_id is not null and filters those employees whose manager_id is not present in the employee_id column, indicating that their manager has left the company. The result is ordered by employee_id.\"\n}"
+            }
+        ]
     }
 ]

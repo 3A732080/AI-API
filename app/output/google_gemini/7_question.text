@@ -10,7 +10,23 @@
     {
         "parts": [
             {
-                "text": "{\n  \"Description\": \"Finds the customer IDs that bought all the products in the Product table.\",\n  \"sql\": \"SELECT C.customer_id\\nFROM Customer C\\nWHERE NOT EXISTS (\\n    SELECT 1\\n    FROM Product P\\n    WHERE NOT EXISTS (\\n        SELECT 1\\n        FROM Customer cus\\n        WHERE cus.customer_id = C.customer_id AND cus.product_key = P.product_key\\n    )\\n);\",\n  \"Explanation\": \"This query uses a subquery to find the products that a customer has not purchased. If the subquery returns no results for a given customer, it means that the customer has purchased all products, and the customer's ID is included in the result set.\"\n}"
+                "text": "{\n  \"Description\": \"Find customer ids that bought all products in the Product table\",\n  \"sql\": \"SELECT c.customer_id\nFROM Customer c\nGROUP BY c.customer_id\nHAVING COUNT(DISTINCT c.product_key) = (SELECT COUNT(*) FROM Product)\",\n  \"Explanation\": \"This query uses a subquery to count the number of distinct products in the Product table. It then groups the Customer table by customer_id and counts the number of distinct products purchased by each customer. Customers who have purchased all products in the Product table will have a count equal to the total number of products, and their customer_ids will be returned as the result.\"\n}"
+            }
+        ],
+        "role": "model"
+    },
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": " There was an error in the sql just now:\n    (102, b\"Incorrect syntax near 'cGROUP'.DB-Lib error message 20018, severity 15:\\nGeneral SQL Server error: Check messages from the SQL Server\\n\")\n    -------------------------------------------------------------------------------------------------------------------------------\n    Please continue to reply in json format according to the above structure, without extra output and escape characters, so that I can get the MS SQL syntax for testing:\n    example:\n\n    {\n        \"Description\": \"xxxxxxx\",\n        \"sql\": \"SELECTxxxx;\",\n        \"Explanation\": \"xxxxxx\"\n    }\n    "
+            }
+        ]
+    },
+    {
+        "parts": [
+            {
+                "text": "{\n  \"Description\": \"Find customer ids that bought all products in the Product table\",\n  \"sql\": \"SELECT c.customer_id\nFROM Customer c\nGROUP BY c.customer_id\nHAVING COUNT(DISTINCT c.product_key) = (SELECT COUNT(*) FROM Product)\",\n  \"Explanation\": \"This query uses a subquery to count the number of distinct products in the Product table. It then groups the Customer table by customer_id and counts the number of distinct products purchased by each customer. Customers who have purchased all products in the Product table will have a count equal to the total number of products, and their customer_ids will be returned as the result.\"\n}"
             }
         ],
         "role": "model"

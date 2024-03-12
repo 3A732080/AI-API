@@ -5,6 +5,6 @@
     },
     {
         "role": "assistant",
-        "content": "{\n\t\"Description\": \"Report the movies with an odd-numbered ID and a description that is not 'boring', ordered by rating in descending order\",\n\t\"sql\": \"SELECT * FROM Cinema WHERE id % 2 = 1 AND description != 'boring' ORDER BY rating DESC;\",\n\t\"Explanation\": \"We use the modulo operator (%) to filter out rows with odd-numbered IDs. We also exclude rows with a description of 'boring'. Finally, we order the results by rating in descending order.\"\n}"
+        "content": "{\n  \"Description\": \"Retrieve movies with odd-numbered ID and non-boring description, ordered by rating in descending order\",\n  \"sql\": \"SELECT * FROM Cinema WHERE id % 2 = 1 AND description <> 'boring' ORDER BY rating DESC;\",\n  \"Explanation\": \"We use the modulo operator (%) to filter out rows with odd-numbered ID. Then we further filter these rows to exclude those with a description of 'boring'. Finally, we order the result by rating in descending order.\"\n}"
     }
 ]
