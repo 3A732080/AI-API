@@ -15,7 +15,10 @@ class ChatGpt:
                 },
                 json={
                     'model': 'gpt-3.5-turbo',
-                    'messages': message
+                    'messages': message,
+                    'temperature': 1,
+                    'top_p': 1,
+                    # 'top_k': 40
                 })
             response.raise_for_status()
 

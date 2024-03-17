@@ -45,7 +45,17 @@ class GoogleGemini:
 
         url = f'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={api_key}'
         headers = {'Content-Type': 'application/json'}
-        data = {"contents": []}
+        data = {
+            "contents": [],
+            "generationConfig": {
+                "temperature": "1",
+                "topP": "1",
+                # "topK": "40",
+                # "candidateCount": "<integer>",
+                # "maxOutputTokens": "<integer>",
+                # "stopSequences": ["<string>"]
+            }
+        }
 
         if continue_text == None:
             self.add_question_to_data(data, f"./input/{index}_question.txt")
