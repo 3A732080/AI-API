@@ -57,7 +57,7 @@ Explanation: The folowing table is ordered by the turn for simplicity.
 -------------------------------------------------------------------------------------------------------------------------------
 
 Please reply in json format according to the above structure, without redundant output and escape characters, so that I can get the MS SQL syntax for testing:
-example:
+example(No escape characters):
 
 {
   "Description": "xxxxxxx",

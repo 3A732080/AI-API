@@ -54,10 +54,7 @@ def analyze_and_compare(lists):
         dump(f"參考答案的SQL撈取結果: {standard_results}")
 
         for name, analyzer in analyzers.items():
-            if name == 'google_gemini':
-                time.sleep(30)
-            else:
-                time.sleep(15)
+            time.sleep(1)
 
             error = False
             compare_res = -1
@@ -82,10 +79,8 @@ def analyze_and_compare(lists):
                 error = True
                 res[name]['error_count'] += 1
 
-                if name == 'google_gemini':
-                    time.sleep(30)
-                else:
-                    time.sleep(15)
+                time.sleep(1)
+
                 analyzer.main(i, error_format_text(result))
                 # 分析答案
                 answer_sql = analyzer.get_answer_sql(f"./output/{name}/{i}_question.json")

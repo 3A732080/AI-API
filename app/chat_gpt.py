@@ -41,7 +41,9 @@ class ChatGpt:
         # 載入 api_key
         api_key = load_file_content('./chat_gpt.env')
 
-        messages = []
+        messages = self.main_by_prepare(True)
+        # dd(1)
+        # messages = []
 
         if continue_text == None:
             question_text = load_file_content(f"./input/{index}_question.txt")
@@ -64,3 +66,37 @@ class ChatGpt:
             messages.append({"role": "assistant", "content": response_text})
 
         save_content(messages, f"./output/chat_gpt/{index}_question.json")
+
+    def main_by_prepare(self, finish = False):
+        if finish == True:
+            return json.loads(load_file_content(f"./input/prepare/chat_gpt/prepare_result.json"))
+
+        # 載入 api_key
+        api_key = load_file_content('./chat_gpt.env')
+
+        # 準備的思路練題目
+        lists = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+        for index in lists:
+            messages = []
+
+            if index != 1:
+                messages = json.loads(load_file_content(f"./input/prepare/chat_gpt/prepare_result.json"))
+
+            cot_text = load_file_content(f"./input/prepare/{index}_cot.txt")
+
+            messages.append({
+                "role": "user",
+                "content": cot_text
+            })
+
+            content = self.call_chat_gpt_api(api_key, messages)
+
+            if content and 'choices' in content and content['choices']:
+                response_text = content['choices'][0].get('message', {}).get('content', '')
+
+                messages.append({"role": "assistant", "content": response_text})
+
+                save_content(messages, f"./input/prepare/chat_gpt/prepare_result.json")
+
+        return json.loads(load_file_content(f"./input/prepare/chat_gpt/prepare_result.json"))
